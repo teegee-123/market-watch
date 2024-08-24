@@ -11,6 +11,11 @@ app.listen(PORT, (error) =>{
     }
 );
 
+app.get('/ping', async (req, res) => {
+    res.send("PING")
+});
+
+
 app.get('/view-market', async (req, res) => {
     res.send(process.env.HELLO+ " "+process.env.ENVIRONMENT)
 });
