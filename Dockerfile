@@ -10,7 +10,7 @@ RUN npm ci
 CMD ["mkdir", "files"]
 COPY . .
 VOLUME ["/usr/src/app"]
-RUN npm run build
 RUN pwd && ls -l
+RUN npm run build
 USER root
 RUN npm run start
