@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm ci
+CMD ["mkdir", "files"]
 COPY . .
 VOLUME ["/usr/src/app"]
 RUN npm run build
