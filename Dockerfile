@@ -7,9 +7,9 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm ci
-RUN npx tsc
 COPY . .
 VOLUME ["/usr/src/app"]
+RUN npx tsc
 RUN pwd && ls -l
 USER root
 RUN npm run start
