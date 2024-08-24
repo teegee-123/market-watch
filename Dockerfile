@@ -7,9 +7,9 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm ci
+RUN npm run build
 COPY . .
 VOLUME ["/usr/src/app"]
 RUN pwd && ls -l
 USER root
-CMD ["node", "build"]
-RUN npm start
+RUN npm run start
