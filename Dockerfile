@@ -9,7 +9,7 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 VOLUME ["/usr/src/app"]
-RUN npx tsc
+RUN npm run build
 RUN pwd && ls -l
 USER root
 RUN npm run start
