@@ -11,4 +11,5 @@ COPY . .
 VOLUME ["/usr/src/app"]
 RUN pwd && ls -l
 USER root
-CMD ["node", "index.ts"]
+CMD ["node", "build"]
+RUN npm start
