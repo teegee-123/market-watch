@@ -26,16 +26,17 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
     }
     await safeReaderBot.startPolling({restart: true})
-    safeReaderBot.on('message', (msg, meta) => {
+    safeReaderBot.on('message', async (msg, meta) => {
         if(msg.text?.includes('SafeAnalyzer')) {
             try{
                 const info = mapToSafeScanner(msg);
                 logFile.writeFile(info as never);
-                const isPosted = !!(postFile.readFile() as SafeScannerResponse[]).find(x => x.contractAddress === info.contractAddress)
-                if(!isPosted) {
-                    postFile.writeFile(info as never);
-                    // post to scraper channel
-                }
+                // const isPosted = !!(postFile.readFile() as SafeScannerResponse[]).find(x => x.contractAddress === info.contractAddress)
+                // if(!isPosted) {
+                postFile.writeFile(info as never);
+                // TODO filter and check if we should post
+                await safeReaderBot.sendMessage(process.env.BUYSIGNALSGROUPID, "New signal: " +info.contractAddress);
+                // }
             } catch(e) {
                 console.log(e)
             }
