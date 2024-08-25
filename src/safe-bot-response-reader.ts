@@ -36,9 +36,9 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
                 // if(!isPosted) {
                 postFile.writeFile(info as never);
                 // TODO filter and check if we should post
-                console.log("POSTING TO: ", process.env.BUYSIGNALSGROUPID)
+                console.log("POSTING TO: ", process.env.BUYSIGNALSCHATID)
 
-                await safeReaderBot.sendMessage(process.env.BUYSIGNALSGROUPID, "New signal: " +info.contractAddress);
+                await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +info.contractAddress);
                 // }
             } catch(e) {
                 console.log(e)
