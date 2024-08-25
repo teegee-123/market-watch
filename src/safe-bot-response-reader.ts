@@ -21,6 +21,7 @@ const SELECTORS = {
 
 
 export async function startListener(logFile: FileHandler, postFile: FileHandler) {
+    console.log("HETTO: ", process.env.BUYSIGNALSCHATID)
     const safeReaderBot = new TelegramBot(token);
     if(safeReaderBot.isPolling()) {
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
@@ -38,7 +39,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
                 // TODO filter and check if we should post
                 console.log("POSTING TO: ", process.env.BUYSIGNALSCHATID)
 
-                await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +info.contractAddress);
+                await safeReaderBot.sendMessage("2180069077", "New signal: " +info.contractAddress);
                 // }
             } catch(e) {
                 console.log(e)
