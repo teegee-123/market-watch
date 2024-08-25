@@ -36,7 +36,8 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
                 // if(!isPosted) {
                 postFile.writeFile(info as never);
                 // TODO filter and check if we should post
-                console.log("POSTING")
+                console.log("POSTING TO: ", process.env.BUYSIGNALSGROUPID)
+
                 await safeReaderBot.sendMessage(process.env.BUYSIGNALSGROUPID, "New signal: " +info.contractAddress);
                 // }
             } catch(e) {
@@ -47,7 +48,6 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
 }
 
 export async function stopListener() {
-    console.log(token)
     const safeReaderBot = new TelegramBot(token);
     await safeReaderBot.stopPolling({cancel: true, reason: 'stopped'})
     safeReaderBot.removeAllListeners();
