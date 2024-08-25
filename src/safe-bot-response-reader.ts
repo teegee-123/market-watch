@@ -45,6 +45,7 @@ export async function startListener() {
 }
 
 export async function stopListener() {
+    console.log(token)
     const safeReaderBot = new TelegramBot(token);
     await safeReaderBot.stopPolling({cancel: true, reason: 'stopped'})
     safeReaderBot.removeAllListeners();
