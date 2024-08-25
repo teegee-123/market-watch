@@ -13,7 +13,15 @@ export interface SafeScannerResponse {
     ownerRenounced: boolean,
     volumeMarketCapRatio: number,
     marketCapLiquidityRatio: number,
-    options: string[],    
+    options: string[], 
+    liquidityPoolRatio: number,
+    liquidityPool: string,
+    holders: number,
+    holderPercentages: number[]
+}
+
+export interface SafeScannerStrat extends SafeScannerResponse {
+    conditions: {description: string, value: any, met: boolean}[]
 }
 
 

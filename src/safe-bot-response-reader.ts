@@ -1,6 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { SafeScannerResponse } from "./models";
 import { FileHandler } from "./file-handler";
+import { Strategy as SafeAnalyzerStrategy } from "./safe-analyzer-strategy";
 
 require('dotenv').config()
 
@@ -16,12 +17,19 @@ const SELECTORS = {
     lockedLiquiditySelector: (message, defaultVal) => message.split("LP Lock:")[1]?.split("\n")[0]?.split("%") ?? defaultVal,
     ownerRenouncedSelector: (message, defaultVal) => !!message.split("Owner:")[1]?.split("\n")[0]?.includes("RENOUNCED") ?? defaultVal,
     optionsSelector: (message, defaultVal) => message.split("Options:")[1]?.split("\n")[0]?.split("|").map(option => option.trim()) ?? defaultVal,
+    liquidityPoolRatioSelector: (message, defaultVal) => message.split("LP Ratio:")[1]?.split("in")[0] ?? defaultVal,
+    liquidityPoolSelector: (message, defaultVal) => message.split("LP Ratio:")[1]?.split("in")[1]?.split("\n")[0] ?? defaultVal,
+    numberOfHoldersSelector: (message, defaultVal) => message.split("Holders:")[1]?.split("|")[0] ?? defaultVal,
+    holderPercentagesSelector: (message, defaultVal) => {
+        let percentages = message.split("Holders:")[1].split("|") ?? [];
+        percentages = percentages.map(x => x.split("\n")[0]);
+        return percentages;
+    }
 }
 
 
 
 export async function startListener(logFile: FileHandler, postFile: FileHandler) {
-    console.log("HETTO: ", process.env.BUYSIGNALSCHATID)
     const safeReaderBot = new TelegramBot(token);
     if(safeReaderBot.isPolling()) {
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
@@ -30,17 +38,13 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
     safeReaderBot.on('message', async (msg, meta) => {
         if(msg.text?.includes('SafeAnalyzer')) {
             try{
-                const info = mapToSafeScanner(msg);
-                console.log("DATA: ", info)
-                logFile.writeFile(info as never);
-                // const isPosted = !!(postFile.readFile() as SafeScannerResponse[]).find(x => x.contractAddress === info.contractAddress)
-                // if(!isPosted) {
-                postFile.writeFile(info as never);
-                // TODO filter and check if we should post
-                console.log("POSTING TO: ", process.env.BUYSIGNALSCHATID)
+                const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));
+                logFile.writeFile(strat as never);
+                if(strat.conditionsMet()) {
+                    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress);
+                    postFile.writeFile(strat as never);
+                }
 
-                await safeReaderBot.sendMessage("-1002180069077", "New signal: " +info.contractAddress);
-                // }
             } catch(e) {
                 console.log(e)
             }
@@ -66,7 +70,9 @@ function toNumber(stringVal) {
         if(stringVal.endsWith("B")) return parseFloat(doreplacements(stringVal, "B")) * 1000000000
         return parseFloat(doreplacements(stringVal, ""))
     }
-    else {
+    else if(stringVal.includes("%")) {
+        return parseFloat(doreplacements(stringVal, "").replace("%", ""))
+    } else {
         return parseFloat(doreplacements(stringVal, ""))
     }
 
@@ -85,10 +91,13 @@ function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const volumeSellers = toNumber(SELECTORS.volumeSellersSelector(message, 0));
     const lockedLiquidity = toNumber(SELECTORS.lockedLiquiditySelector(message, 0));
     const ownerRenounced = SELECTORS.ownerRenouncedSelector(message, false);
+    const liquidityPoolRatio = toNumber(SELECTORS.liquidityPoolRatioSelector(message, '0%'));
+    const liquidityPool = SELECTORS.liquidityPoolSelector(message, 'BNB')
+    const holders = toNumber(SELECTORS.numberOfHoldersSelector(message, '0'))
+    const holderPercentages = SELECTORS.holderPercentagesSelector(message, []).map(x => toNumber(x))    
     const options = SELECTORS.optionsSelector(message, [])
     const volumeMarketCapRatio = volume/marketCap;
     const marketCapLiquidityRatio = marketCap/liquidity
-
     return {
         message: message,
         tokenName: tokenName,
@@ -104,6 +113,10 @@ function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
         volumeMarketCapRatio: volumeMarketCapRatio,
         marketCapLiquidityRatio: marketCapLiquidityRatio,
         options: options,
+        liquidityPoolRatio: liquidityPoolRatio,
+        liquidityPool: liquidityPool,
+        holders: holders,
+        holderPercentages: holderPercentages,
     };
 }
 
