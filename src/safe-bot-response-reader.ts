@@ -4,7 +4,7 @@ import { FileHandler } from "./file-handler";
 import { Strategy as SafeAnalyzerStrategy } from "./safe-analyzer-strategy";
 
 require('dotenv').config()
-
+const environment = process.env.ENVIRONMENT
 const token = process.env.SAFEBOTREADERTOKEN
 
 const SELECTORS = {
@@ -29,7 +29,7 @@ const SELECTORS = {
 
 
 
-export async function startListener(logFile: FileHandler, postFile: FileHandler) {
+export async function startListener(logFile: FileHandler, postFile: FileHandler, errorFile: FileHandler) {
     const safeReaderBot = new TelegramBot(token);
     if(safeReaderBot.isPolling()) {
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
@@ -40,7 +40,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler)
             try{
                 const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));
                 logFile.writeFile(strat as never);
-                if(strat.conditionsMet()) {
+                if(strat.conditionsMet() && environment !== "LOCAL") {
                     await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress);
                     postFile.writeFile(strat as never);
                 }

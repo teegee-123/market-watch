@@ -7,12 +7,13 @@ const app = express();
 
 const logFile = new FileHandler('./files/logs.json')
 const postFile = new FileHandler('./files/posts.json')
+const errorFile = new FileHandler('./files/errors.json')
 
 
 
 app.listen(PORT, async () =>{
     // await stopListener();
-    await startListener(logFile, postFile);
+    await startListener(logFile, postFile, errorFile);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
 
@@ -22,7 +23,7 @@ app.get('/ping', async (req, res) => {
 
 
 app.get('/start', async (req, res) => {
-    await startListener(logFile, postFile);
+    await startListener(logFile, postFile, errorFile);
     res.send("started listening")
 });
 
@@ -44,6 +45,10 @@ app.get('/logs', async(req, res) => {
 
 app.get('/posts', async(req, res) => {
     res.send(postFile.readFile())
+})
+
+app.get('/errors', async(req, res) => {
+    res.send(errorFile.readFile())
 })
 
 app.get('/purge', async(req, res) => {

@@ -10,14 +10,14 @@ export class Strategy {
         return {
             ...data,
             conditions: [
-                {description: 'ownerRenounced', value: this.data.ownerRenounced, met: this.data.ownerRenounced},
-                {description: 'lp ratio > 15%', value: this.data.liquidityPoolRatio, met: this.data.liquidityPoolRatio > 15},
-                {description: 'is in radium', value: this.data.liquidityPool, met: this.data.liquidityPool.toLowerCase().includes('raydium')},
-                {description: 'holders > 100', value: this.data.holders, met: this.data.holders > 100},
-                {description: 'holdersPercentages less than 20%', value: `${this.data.holderPercentages} = ${this.data.holderPercentages.reduce((partialSum, a) => partialSum + a, 0)}`, met: this.data.holderPercentages.reduce((partialSum, a) => partialSum + a, 0) < 20},
-                {description: 'marketCap >= 15000', value: this.data.marketCap, met: this.data.marketCap >= 15000},
-                {description: 'vol/marketCap >= 0.6', value: this.data.volumeMarketCapRatio, met: this.data.volumeMarketCapRatio >= 0.6},
-                {description: 'locked >= 100', value: this.data.lockedLiquidity, met: this.data.lockedLiquidity >= 100},
+                {description: 'ownerRenounced', value: data.ownerRenounced, met: data.ownerRenounced},
+                {description: 'lp ratio > 15%', value: data.liquidityPoolRatio, met: data.liquidityPoolRatio > 15},
+                {description: 'is in radium', value: data.liquidityPool, met: data.liquidityPool.toLowerCase().includes('raydium')},
+                {description: 'holders > 100', value: data.holders, met: data.holders > 100},
+                {description: 'holdersPercentages less than 20%', value: `${data.holderPercentages} = ${data.holderPercentages.reduce((partialSum, a) => partialSum + a, 0)}`, met: data.holderPercentages.reduce((partialSum, a) => partialSum + a, 0) < 20},
+                {description: 'marketCap >= 15000', value: data.marketCap, met: data.marketCap >= 15000},
+                {description: 'vol/marketCap >= 0.6', value: data.volumeMarketCapRatio, met: data.volumeMarketCapRatio >= 0.6},
+                {description: 'locked >= 100', value: data.lockedLiquidity, met: data.lockedLiquidity >= 100},
             ]
         }
     }
