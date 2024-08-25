@@ -21,6 +21,13 @@ app.get('/ping', async (req, res) => {
 });
 
 
+app.get('/start', async (req, res) => {
+    await startListener(logFile, postFile);
+    res.send("started listening")
+});
+
+
+
 app.get('/view-market', async (req, res) => {
     res.send(process.env.HELLO)
 });
