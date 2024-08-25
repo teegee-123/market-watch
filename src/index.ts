@@ -8,7 +8,7 @@ const app = express();
 
 app.listen(PORT, async () =>{
     // await stopListener();
-    await startListener();
+    // await startListener();
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
 
