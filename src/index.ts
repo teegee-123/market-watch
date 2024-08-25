@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { startListener, stopListener } from "./safe-bot-response-reader";
-dotenv.config();
+require('dotenv').config()
 const PORT = process.env.PORT;
 const app = express();
 

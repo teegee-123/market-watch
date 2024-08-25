@@ -2,8 +2,8 @@ import TelegramBot from "node-telegram-bot-api";
 import { SafeScannerResponse } from "./models";
 import { FileHandler } from "./file-handler";
 
-import dotenv from 'dotenv'
-dotenv.config()
+require('dotenv').config()
+
 const token = process.env.SAFEBOTREADERTOKEN
 const logFile = new FileHandler('./files/logs.json')
 const postFile = new FileHandler('./files/posts.json')
