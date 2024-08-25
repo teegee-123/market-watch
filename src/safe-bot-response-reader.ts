@@ -5,8 +5,6 @@ import { FileHandler } from "./file-handler";
 require('dotenv').config()
 
 const token = process.env.SAFEBOTREADERTOKEN
-const logFile = new FileHandler('./files/logs.json')
-const postFile = new FileHandler('./files/posts.json')
 
 const SELECTORS = {
     contractAddressSelector: (message, defaultVal) => message.split("SOL:")[1]?.split("\n")[0]?.trim() ?? defaultVal,
@@ -22,7 +20,7 @@ const SELECTORS = {
 
 
 
-export async function startListener() {
+export async function startListener(logFile: FileHandler, postFile: FileHandler) {
     const safeReaderBot = new TelegramBot(token);
     if(safeReaderBot.isPolling()) {
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})

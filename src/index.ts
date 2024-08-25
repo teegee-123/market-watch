@@ -1,14 +1,18 @@
 import express from "express";
-import dotenv from "dotenv";
 import { startListener, stopListener } from "./safe-bot-response-reader";
+import { FileHandler } from "./file-handler";
 require('dotenv').config()
 const PORT = process.env.PORT;
 const app = express();
 
+const logFile = new FileHandler('./files/logs.json')
+const postFile = new FileHandler('./files/posts.json')
+
+
 
 app.listen(PORT, async () =>{
     // await stopListener();
-    // await startListener();
+    await startListener(logFile, postFile);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
 
@@ -27,12 +31,16 @@ app.get('/stop', async (req, res) => {
     res.send("Stopped listening")
 });
 
+app.get('/logs', async(req, res) => {
+    res.send(logFile.readFile())
+})
 
-function runSensitiveCode(functionCall:  any) {
-    const environment = process.env.ENVIRONMENT;
-    if(environment === "LOCAL") {
-        return "Cant run on local"
-    }
-    functionCall();
-}
+app.get('/posts', async(req, res) => {
+    res.send(postFile.readFile())
+})
 
+app.get('/purge', async(req, res) => {
+    logFile.purgeFile();
+    postFile.purgeFile();
+    res.send("Files purged")
+})
