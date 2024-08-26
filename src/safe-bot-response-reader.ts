@@ -6,26 +6,30 @@ import { Strategy as SafeAnalyzerStrategy } from "./safe-analyzer-strategy";
 require('dotenv').config()
 const environment = process.env.ENVIRONMENT
 const token = process.env.SAFEBOTREADERTOKEN
-
+function readLine(message, key) {
+    return message.split(key)[1]?.split("\n")[0]?.trim() ?? ''
+}
 const SELECTORS = {
-    contractAddressSelector: (message, defaultVal) => message.split("SOL:")[1]?.split("\n")[0]?.trim() ?? defaultVal,
-    marketCapSelector: (message, defaultVal) => message.split("MCap:")[1]?.split("|")[0] ?? defaultVal,
-    liquiditySelector: (message, defaultVal) => message.split("Liquid:")[1]?.trim().split(" ")[0] ?? defaultVal,
-    volumeSelector: (message, defaultVal) => message.split("Vol24h:")[1]?.split("|")[0].trim() ?? defaultVal,
-    volumeBuyersSelector: (message, defaultVal) => message.split("Vol24h:")[1]?.split("B:")[1]?.split("|")[0] ?? defaultVal,
-    volumeSellersSelector: (message, defaultVal) => message.split("Vol24h:")[1]?.split("S:")[1]?.split("|")[0] ?? defaultVal,
-    lockedLiquiditySelector: (message, defaultVal) => message.split("LP Lock:")[1]?.split("\n")[0]?.split("%") ?? defaultVal,
-    ownerRenouncedSelector: (message, defaultVal) => !!message.split("Owner:")[1]?.split("\n")[0]?.includes("RENOUNCED") ?? defaultVal,
-    optionsSelector: (message, defaultVal) => message.split("Options:")[1]?.split("\n")[0]?.split("|").map(option => option.trim()) ?? defaultVal,
-    liquidityPoolRatioSelector: (message, defaultVal) => message.split("LP Ratio:")[1]?.split("in")[0] ?? defaultVal,
-    liquidityPoolSelector: (message, defaultVal) => message.split("LP Ratio:")[1]?.split("in")[1]?.split("\n")[0] ?? defaultVal,
-    numberOfHoldersSelector: (message, defaultVal) => message.split("Holders:")[1]?.split("|")[0] ?? defaultVal,
-    holderPercentagesSelector: (message, defaultVal) => {
-        let percentages = message.split("Holders:")[1].split("|") ?? [];
-        percentages = percentages.map(x => x.split("\n")[0]);
-        return percentages;
+    contractAddressSelector: (message: any, defaultVal: any) => readLine(message, "SOL:") ?? defaultVal,
+    marketCapSelector: (message: any, defaultVal: any) => readLine(message, "MCap:").split("|")[0] ?? defaultVal,
+    liquiditySelector: (message: any, defaultVal: any) => readLine(message, "Liquid:").split(" ")[0] ?? defaultVal,
+    volumeSelector: (message: any, defaultVal: any) => readLine(message, "Vol24h:").split("|")[0].trim() ?? defaultVal,
+    volumeBuyersSelector: (message: any, defaultVal: any) => readLine(message, "Vol24h:").split("B:")[1]?.split("|")[0] ?? defaultVal,
+    volumeSellersSelector: (message: any, defaultVal: any) => readLine(message, "Vol24h:").split("S:")[1]?.split("|")[0] ?? defaultVal,
+    lockedLiquiditySelector: (message: any, defaultVal: any) =>  readLine(message, "LP Lock:").split("%") ?? defaultVal,
+    ownerRenouncedSelector: (message: any, defaultVal: any) => !!readLine(message, "Owner:").includes("RENOUNCED") ?? defaultVal,
+    optionsSelector: (message: any, defaultVal: any) => readLine(message, "Options:").split("|").map(option => option.trim()) ?? defaultVal,
+    liquidityPoolRatioSelector: (message: any, defaultVal: any) =>  readLine(message, "LP Ratio:").split("in")[0] ?? defaultVal,
+    liquidityPoolSelector: (message: any, defaultVal: any) => readLine(message, "LP Ratio:").split("in")[1] ?? defaultVal,
+    numberOfHoldersSelector: (message: any, defaultVal: any) => readLine(message, "Holders:").split("|")[0] ?? defaultVal,
+    holderPercentagesSelector: (message: any, defaultVal: any) => {
+        let percentages = readLine(message, "Holders:").split("|") ?? [];
+        percentages = percentages.map((x: string) => x.split("\n")[0]);
+        percentages.shift()
+        return percentages
     }
 }
+
 
 
 
