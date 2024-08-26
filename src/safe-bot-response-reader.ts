@@ -44,6 +44,8 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
             try{
                 const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));
                 logFile.writeFile(strat as never);
+                console.log(strat.conditionsMet())
+                console.log(environment)
                 if(strat.conditionsMet() && environment !== "LOCAL") {
                     await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress);
                     postFile.writeFile(strat as never);
