@@ -1,19 +1,20 @@
 import express from "express";
 import { startListener, stopListener } from "./safe-bot-response-reader";
 import { FileHandler } from "./file-handler";
+import TelegramBot from "node-telegram-bot-api";
 require('dotenv').config()
 const PORT = process.env.PORT;
+const token = process.env.SAFEBOTREADERTOKEN
 const app = express();
-
 const logFile = new FileHandler('./files/logs.json')
 const postFile = new FileHandler('./files/posts.json')
 const errorFile = new FileHandler('./files/errors.json')
-
+const safeReaderBot = new TelegramBot(token);
 
 
 app.listen(PORT, async () =>{
     // await stopListener();
-    await startListener(logFile, postFile, errorFile);
+    await startListener(logFile, postFile, errorFile, safeReaderBot);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
 
@@ -23,7 +24,7 @@ app.get('/ping', async (req, res) => {
 
 
 app.get('/start', async (req, res) => {
-    await startListener(logFile, postFile, errorFile);
+    await startListener(logFile, postFile, errorFile, safeReaderBot);
     res.send("started listening")
 });
 
@@ -35,7 +36,7 @@ app.get('/view-market', async (req, res) => {
 
 
 app.get('/stop', async (req, res) => {
-    await stopListener();
+    await stopListener(safeReaderBot);
     res.send("Stopped listening")
 });
 

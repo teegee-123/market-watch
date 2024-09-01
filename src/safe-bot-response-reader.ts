@@ -5,7 +5,7 @@ import { Strategy as SafeAnalyzerStrategy } from "./safe-analyzer-strategy";
 
 require('dotenv').config()
 const environment = process.env.ENVIRONMENT
-const token = process.env.SAFEBOTREADERTOKEN
+
 function readLine(message, key) {
     return message.split(key)[1]?.split("\n")[0]?.trim() ?? ''
 }
@@ -33,8 +33,7 @@ const SELECTORS = {
 
 
 
-export async function startListener(logFile: FileHandler, postFile: FileHandler, errorFile: FileHandler) {
-    const safeReaderBot = new TelegramBot(token);
+export async function startListener(logFile: FileHandler, postFile: FileHandler, errorFile: FileHandler, safeReaderBot: TelegramBot) {    
     if(safeReaderBot.isPolling()) {
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
     }
@@ -59,8 +58,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
     });
 }
 
-export async function stopListener() {
-    const safeReaderBot = new TelegramBot(token);
+export async function stopListener(safeReaderBot: TelegramBot) {    
     await safeReaderBot.stopPolling({cancel: true, reason: 'stopped'})
     safeReaderBot.removeAllListeners();
     await safeReaderBot.close();
