@@ -18,7 +18,8 @@ export interface SafeScannerResponse {
     liquidityPool: string,
     holders: number,
     holderPercentages: number[],
-    date: string
+    date: string,
+    title: string
 }
 
 export interface SafeScannerStrat extends SafeScannerResponse {

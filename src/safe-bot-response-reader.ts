@@ -41,7 +41,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
     await safeReaderBot.startPolling({restart: true})
     safeReaderBot.on('message', async (msg, meta) => {
         if(msg.text?.includes('SafeAnalyzer')) {
-            console.log(msg, meta)
+            console.log(msg)
             try{
                 const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));
                 logFile.writeFile(strat as never);
@@ -106,6 +106,7 @@ function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const volumeMarketCapRatio = volume/marketCap;
     const marketCapLiquidityRatio = marketCap/liquidity;
     const date = new Date();
+    const title = msg.chat.title;
     return {
         message: message,
         tokenName: tokenName,
@@ -125,7 +126,8 @@ function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
         liquidityPool: liquidityPool,
         holders: holders,
         holderPercentages: holderPercentages,
-        date: date.toDateString()
+        date: date.toDateString(),
+        title: title
     };
 }
 
