@@ -38,12 +38,14 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
     }
     await safeReaderBot.startPolling({restart: true})
+    console.log("started")
     safeReaderBot.on('message', async (msg, meta) => {
         if(msg.text?.includes('SafeAnalyzer')) {
             console.log(msg)
             try{
                 const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));
                 logFile.writeFile(strat as never);
+                console.log(strat.data)
                 console.log(strat.conditionsMet())
                 console.log(environment)
                 if(strat.conditionsMet() && environment !== "LOCAL") {
