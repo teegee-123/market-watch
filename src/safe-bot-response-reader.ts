@@ -33,7 +33,8 @@ const SELECTORS = {
 
 
 
-export async function startListener(logFile: FileHandler, postFile: FileHandler, errorFile: FileHandler, safeReaderBot: TelegramBot) {    
+export async function startListener(logFile: FileHandler, postFile: FileHandler, errorFile: FileHandler, safeReaderBot: TelegramBot) {        
+    await safeReaderBot.logOut()
     if(safeReaderBot.isPolling()) {
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
     }
