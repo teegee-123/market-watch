@@ -40,6 +40,8 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
     }
     await safeReaderBot.startPolling({restart: true})
     console.log("started")
+    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID,  `Service is up ${new Date()}`);
+
     safeReaderBot.on('message', async (msg, meta) => {
         if(msg.text?.includes('SafeAnalyzer')) {
             console.log(msg)

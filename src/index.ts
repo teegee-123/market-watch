@@ -9,13 +9,11 @@ const app = express();
 const logFile = new FileHandler('./files/logs.json')
 const postFile = new FileHandler('./files/posts.json')
 const errorFile = new FileHandler('./files/errors.json')
-const safeReaderBot = new TelegramBot(token);
+let safeReaderBot = null;
 
 
 app.listen(PORT, async () =>{
-    // await stopListener();
-    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "Test 213");
-    console.log("SENT TEST")
+    const safeReaderBot = new TelegramBot(token);
     await startListener(logFile, postFile, errorFile, safeReaderBot);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
