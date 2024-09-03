@@ -14,6 +14,7 @@ const safeReaderBot = new TelegramBot(token);
 
 app.listen(PORT, async () =>{
     // await stopListener();
+    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "Test 213");
     await startListener(logFile, postFile, errorFile, safeReaderBot);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
