@@ -10,6 +10,7 @@ function readLine(message, key) {
     return message.split(key)[1]?.split("\n")[0]?.trim() ?? ''
 }
 const SELECTORS = {
+    fromFeedSelector: (message: any, defaultVal: any) => readLine(message, "Source feed:"),
     contractAddressSelector: (message: any, defaultVal: any) => readLine(message, "SOL:") ?? defaultVal,
     marketCapSelector: (message: any, defaultVal: any) => readLine(message, "MCap:").split("|")[0] ?? defaultVal,
     liquiditySelector: (message: any, defaultVal: any) => readLine(message, "Liquid:").split(" ")[0] ?? defaultVal,
@@ -92,20 +93,15 @@ function toNumber(stringVal) {
 
 function getSafety(line: string) {
     const statuses = ['🟢','🟠','🔴']
-    if(statuses.includes(line.split("|")[3].trim())) {
-        return line.split("|")[3].trim()
-    } else if(statuses.includes(line.split("|")[4].trim())){
-        return line.split("|")[4].trim()
-    }
-    else return 'DEFAULT'
+    return statuses.find(s => line.search(s) > 0) ?? '🔴'
 }
 
 function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const message = msg.text;
     const lines = message.split('\n');
-    const fromFeed = lines[0].split("|")[1].trim();
+    const fromFeed = SELECTORS.fromFeedSelector(message, "DEFAULT");
     const tokenName = lines[0].split("|")[2].trim();
-    const safety = getSafety(lines[0]) // lines[0].split("|")[3].includes("🟠").trim();
+    const safety = getSafety(lines[0])
     const contractAddress = SELECTORS.contractAddressSelector(message, '0');
     const marketCap = toNumber(SELECTORS.marketCapSelector(message, 0));
     const liquidity = toNumber(SELECTORS.liquiditySelector(message, 0));
