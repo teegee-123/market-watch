@@ -55,7 +55,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
                 console.log("strat.data.safety", strat.data.safety)
                 console.log(environment)
                 if(strat.conditionsMet() && environment !== "LOCAL") {
-                    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress + " from feed "+ strat.data.fromFeed+"\n\n"+ JSON.stringify(strat.data));
+                    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress + " from feed "+ strat.data.fromFeed+"\n\n"+ JSON.stringify(strat.data, null, 4));
                     postFile.writeFile(strat as never);
                 }
 
@@ -100,7 +100,7 @@ function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const message = msg.text;
     const lines = message.split('\n');
     const fromFeed = SELECTORS.fromFeedSelector(message, "DEFAULT");
-    const tokenName = lines[0].split("|")[2].trim();
+    const tokenName = lines[0].split("|")[1].trim();
     const safety = getSafety(lines[0])
     const contractAddress = SELECTORS.contractAddressSelector(message, '0');
     const marketCap = toNumber(SELECTORS.marketCapSelector(message, 0));
