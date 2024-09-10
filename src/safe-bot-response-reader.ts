@@ -43,12 +43,11 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
     await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started bot service ${new Date()} ON ${environment}`);
 
     safeReaderBot.on('message', async (msg, meta) => {
-        console.log('msg', msg)
-        console.log('meta', meta)
-        if(msg.text?.includes('SafeAnalyzer')) {
-            console.log(msg)
+        if(msg.text?.includes('SafeAnalyzer')) {            
             try{
-                const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));
+
+                const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));                
+                await safeReaderBot.sendMessage(msg.from.id, JSON.stringify(strat.data.conditions))
                 logFile.writeFile(strat as never);
                 console.log(strat.data)
                 console.log(strat.conditionsMet())
