@@ -51,6 +51,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
                 logFile.writeFile(strat as never);
                 console.log(strat.data)
                 console.log(strat.conditionsMet())
+                console.log("strat.data.safety", strat.data.safety)
                 console.log(environment)
                 if(strat.conditionsMet() && environment !== "LOCAL") {
                     await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress + " from feed "+ strat.data.fromFeed+"\n\n"+ JSON.stringify(strat.data));
