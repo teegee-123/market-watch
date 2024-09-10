@@ -47,7 +47,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
             try{
 
                 const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));                
-                await safeReaderBot.sendMessage(msg.from.id, JSON.stringify(strat.data.conditions))
+                await safeReaderBot.sendMessage("-100"+msg.from.id, JSON.stringify(strat.data.conditions))
                 logFile.writeFile(strat as never);
                 console.log(strat.data)
                 console.log(strat.conditionsMet())
