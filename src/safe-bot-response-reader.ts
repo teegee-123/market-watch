@@ -54,7 +54,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
                 console.log(strat.conditionsMet())
                 console.log(environment)
                 if(strat.conditionsMet() && environment !== "LOCAL") {
-                    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress + " from feed "+ strat.data.fromFeed);
+                    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress + " from feed "+ strat.data.fromFeed+"\n\n"+ JSON.stringify(strat.data));
                     postFile.writeFile(strat as never);
                 }
 
@@ -92,10 +92,10 @@ function toNumber(stringVal) {
 
 function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const message = msg.text;
-    const fromFeed = message.split("SafeAnalyzer|")[1]?.split("|")[0] ?? message.split('\n')[0]
     const lines = message.split('\n');
-    const tokenName = lines[0].split("|")[1].trim();
-    const safety = lines[0].split("|")[2].trim();
+    const fromFeed = lines[0].split("|")[1].trim();
+    const tokenName = lines[0].split("|")[2].trim();
+    const safety = lines[0].split("|")[3].trim();
     const contractAddress = SELECTORS.contractAddressSelector(message, '0');
     const marketCap = toNumber(SELECTORS.marketCapSelector(message, 0));
     const liquidity = toNumber(SELECTORS.liquiditySelector(message, 0));
