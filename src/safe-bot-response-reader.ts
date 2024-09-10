@@ -43,6 +43,8 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
     await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started bot service ${new Date()} ON ${environment}`);
 
     safeReaderBot.on('message', async (msg, meta) => {
+        console.log('msg', msg)
+        console.log('meta', meta)
         if(msg.text?.includes('SafeAnalyzer')) {
             console.log(msg)
             try{
@@ -90,6 +92,7 @@ function toNumber(stringVal) {
 
 function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const message = msg.text;
+    const fromFeed = message.split("SafeAnalyzer|")[1]?.split("|")[0] ?? message.split('\n')[0]
     const lines = message.split('\n');
     const tokenName = lines[0].split("|")[1].trim();
     const safety = lines[0].split("|")[2].trim();
@@ -112,6 +115,7 @@ function mapToSafeScanner(msg:  TelegramBot.Message): SafeScannerResponse {
     const title = msg.chat.title;
     return {
         message: message,
+        fromFeed: fromFeed,
         tokenName: tokenName,
         safety: safety,
         contractAddress: contractAddress,

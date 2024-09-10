@@ -1,6 +1,7 @@
 
 export interface SafeScannerResponse {
     message: string,
+    fromFeed: string,
     tokenName: string,
     safety: string,
     contractAddress: string,
