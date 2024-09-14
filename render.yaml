@@ -1,0 +1,24 @@
+# Exported from Render on 2024-09-14T09:13:02Z
+services:
+- type: web
+  name: market-watch
+  runtime: node
+  repo: https://github.com/teegee-123/market-watch
+  plan: free
+  envVars:
+  - key: SAFEBOTREADERTOKEN
+    sync: false
+  - key: PORT
+    sync: false
+  - key: BUYSIGNALSCHATID
+    sync: false
+  - key: ENVIRONMENT
+    sync: false
+  - key: CMCTOKEN
+    sync: false
+  - key: HELLO
+    sync: false
+  region: oregon
+  buildCommand: npm install && npm run build
+  startCommand: node dist/index.js
+version: "1"
