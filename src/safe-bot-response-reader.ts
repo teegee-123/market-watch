@@ -68,7 +68,7 @@ export async function startListener(logFile: FileHandler, postFile: FileHandler,
 
 export async function stopListener(safeReaderBot: TelegramBot) {    
     await safeReaderBot.stopPolling({cancel: true, reason: 'stopped'})
-    safeReaderBot.removeAllListeners();
+    safeReaderBot.removeAllListeners('message');
     await safeReaderBot.close();
 }
 

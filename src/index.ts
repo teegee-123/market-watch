@@ -15,9 +15,9 @@ let safeReaderBot = null;
 
 
 app.listen(PORT, async () =>{
-    const safeReaderBot = new TelegramBot(token);
+    // const safeReaderBot = new TelegramBot(token);
     const rugCheckAnalyzerBot = new TelegramBot(rugcheck_bot_token);
-    await startListener(logFile, postFile, errorFile, safeReaderBot);
+    // await startListener(logFile, postFile, errorFile, safeReaderBot);
     await startRugListener(rugCheckAnalyzerBot);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });

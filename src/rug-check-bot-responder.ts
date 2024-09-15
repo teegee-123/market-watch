@@ -1,7 +1,6 @@
-import { request } from "http";
+import { get, request } from "http";
 import TelegramBot, { TelegramEvents } from "node-telegram-bot-api";
-import { Request } from "request";
-
+import fetch from 'node-fetch';
 
 require('dotenv').config()
 const environment = process.env.ENVIRONMENT
@@ -17,50 +16,40 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
     }
     await rugcheckbot.startPolling({restart: true})
     console.log("started")
-    await rugcheckbot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started rugcheck bot service ${new Date()} ON ${environment}`);
+    // await rugcheckbot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started rugcheck bot service ${new Date()} ON ${environment}`);
 
     rugcheckbot.on('message', async (msg, meta) => {
         const addresses = msg.text?.match("[A-Za-z0-9]{44}") 
         if(addresses.length){
             const address = addresses[0]
             try{
-                request(`https://api.rugcheck.xyz/v1/tokens/${address}/report`, async (response) => {
-                    if (response.statusCode === 200) {
-                        console.log(response) 
-                        await rugcheckbot.sendMessage(msg.chat.id, JSON.stringify(response, null ,4 ))
-                     }
-                     else console.log('Error ', response)
-                })
+                console.log(`http://api.rugcheck.xyz/v1/tokens/${address}/report`)
+                const response = await fetch(`http://api.rugcheck.xyz/v1/tokens/${address}/report`);
+                const data = await response.json();                
+                let responseMessage = `RugCheckAnalyzer
+                                Address: ${data.mint}
+                                Risks: ${JSON.stringify(data.risks, null ,4)}
+                                Score: ${JSON.stringify(data.score)}
+                                Rugged: ${data.rugged}\n`
+                data.markets?.forEach(market => {
+                    responseMessage+=`Market ${market.marketType}
+                    LP: ${market.lp.lpLockedUSD}`    
+                });    
+                console.log(responseMessage);                        
+                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage);
+
             } catch(e) {
                 console.log('Error: ', e)
             }
         }
-        // if(msg.text?.includes('SafeAnalyzer')) {            
-        //     try{
 
-        //         // const strat = new SafeAnalyzerStrategy(mapToSafeScanner(msg));                
-        //         // // await safeReaderBot.sendMessage("-100"+msg.from.id, JSON.stringify(strat.data.conditions))
-        //         // logFile.writeFile(strat as never);
-        //         // console.log(strat.data)
-        //         // console.log(strat.conditionsMet())
-        //         // console.log("strat.data.safety", strat.data.safety)
-        //         // console.log(environment)
-        //         // if(strat.conditionsMet() && environment !== "LOCAL") {
-        //         //     await rugcheckbot.sendMessage(process.env.BUYSIGNALSCHATID, "New signal: " +strat.data.contractAddress + " from feed "+ strat.data.fromFeed+"\n\n"+ JSON.stringify(strat.data, null, 4));
-        //         //     postFile.writeFile(strat as never);
-        //         // }
-
-        //     } catch(e) {
-        //         console.log(e)
-        //     }
-        // }
     });
 }
 
-export async function stopListener(safeReaderBot: TelegramBot) {    
-    await safeReaderBot.stopPolling({cancel: true, reason: 'stopped'})
-    safeReaderBot.removeAllListeners();
-    await safeReaderBot.close();
+export async function stopListener(rugcheckbot: TelegramBot) {    
+    await rugcheckbot.stopPolling({cancel: true, reason: 'stopped'})
+    rugcheckbot.removeAllListeners('message');
+    await rugcheckbot.close();
 }
 
 
