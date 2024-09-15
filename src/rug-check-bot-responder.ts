@@ -20,7 +20,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
 
     rugcheckbot.on('message', async (msg, meta) => {
         const addresses = msg.text?.match("[A-Za-z0-9]{44}") 
-        if(addresses.length){
+        if(addresses?.length){
             const address = addresses[0]
             try{
                 console.log(`http://api.rugcheck.xyz/v1/tokens/${address}/report`)
