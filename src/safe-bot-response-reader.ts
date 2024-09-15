@@ -1,4 +1,4 @@
-import TelegramBot from "node-telegram-bot-api";
+import TelegramBot, { TelegramEvents } from "node-telegram-bot-api";
 import { SafeScannerResponse } from "./models";
 import { FileHandler } from "./file-handler";
 import { Strategy as SafeAnalyzerStrategy } from "./safe-analyzer-strategy";
@@ -35,13 +35,13 @@ const SELECTORS = {
 
 
 export async function startListener(logFile: FileHandler, postFile: FileHandler, errorFile: FileHandler, safeReaderBot: TelegramBot) {        
-    if(safeReaderBot.isPolling()) {
-        await safeReaderBot.removeAllListeners()
+    if(safeReaderBot.isPolling()) {        
+        await safeReaderBot.removeAllListeners('message')
         await safeReaderBot.stopPolling({cancel: true, reason: 'starting a new listener'})
     }
     await safeReaderBot.startPolling({restart: true})
     console.log("started")
-    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started bot service ${new Date()} ON ${environment}`);
+    await safeReaderBot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started safeanalyzer bot service ${new Date()} ON ${environment}`);
 
     safeReaderBot.on('message', async (msg, meta) => {
         if(msg.text?.includes('SafeAnalyzer')) {            

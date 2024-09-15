@@ -2,9 +2,11 @@ import express from "express";
 import { startListener, stopListener } from "./safe-bot-response-reader";
 import { FileHandler } from "./file-handler";
 import TelegramBot from "node-telegram-bot-api";
+import { startRugListener } from "./rug-check-bot-responder";
 require('dotenv').config()
 const PORT = process.env.PORT;
 const token = process.env.SAFEBOTREADERTOKEN
+const rugcheck_bot_token = process.env.RUGCHECKANALYZERTOKEN
 const app = express();
 const logFile = new FileHandler('./files/logs.json')
 const postFile = new FileHandler('./files/posts.json')
@@ -14,7 +16,9 @@ let safeReaderBot = null;
 
 app.listen(PORT, async () =>{
     const safeReaderBot = new TelegramBot(token);
+    const rugCheckAnalyzerBot = new TelegramBot(rugcheck_bot_token);
     await startListener(logFile, postFile, errorFile, safeReaderBot);
+    await startRugListener(rugCheckAnalyzerBot);
     console.log("Server is Successfully Running, and App is listening on port "+ PORT)
 });
 
