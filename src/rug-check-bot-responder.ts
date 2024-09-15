@@ -27,7 +27,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                 const response = await fetch(`http://api.rugcheck.xyz/v1/tokens/${address}/report`);
                 const data = await response.json();                
                 let responseMessage = `RugCheckAnalyzer
-                                <a>http://api.rugcheck.xyz/v1/tokens/${address}/report</a>
+                                http://api.rugcheck.xyz/v1/tokens/${address}/report
                                 Address: ${data.mint}
                                 Risks: ${JSON.stringify(data.risks, null ,4)}
                                 Score: ${JSON.stringify(data.score)}
