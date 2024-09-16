@@ -31,8 +31,8 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                 
                 const data = await rugcheck_response.json();                
                 let responseMessage = `RugCheckAnalyzer
-                                https://api.dexscreener.com/latest/dex/tokens/${address}
-                                http://api.rugcheck.xyz/v1/tokens/${address}/report
+                                https://api.dexscreener.com/latest/dex/tokens/${address} \n
+                                http://api.rugcheck.xyz/v1/tokens/${address}/report \n
                                 Address: \`${data.mint}\`
                                 Risks: ${JSON.stringify(data.risks, null ,4)}
                                 Score: ${JSON.stringify(data.score)}
@@ -42,7 +42,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                     LP: ${market.lp.lpLockedUSD}\n`    
                 });    
                 console.log(responseMessage);                        
-                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage);
+                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage, { parse_mode: 'MarkdownV2'});
 
             } catch(e) {
                 console.log('Error: ', e)
