@@ -37,7 +37,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                                 `
                 data.markets?.forEach(market => {
                     responseMessage+=`Market ${market.marketType}
-                    LP: ${market.lp.lpLockedUSD}\n`    
+                    LP: ${market.lp?.lpLockedUSD}\n`    
                 });    
                 console.log(responseMessage);                        
                 await rugcheckbot.sendMessage(msg.chat.id,  responseMessage, { parse_mode: 'HTML'});
