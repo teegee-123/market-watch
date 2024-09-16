@@ -19,7 +19,10 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
     // await rugcheckbot.sendMessage(process.env.BUYSIGNALSCHATID,  `Started rugcheck bot service ${new Date()} ON ${environment}`);
 
     rugcheckbot.on('message', async (msg, meta) => {
+        
         const addresses = msg.text?.match("[A-Za-z0-9]{44}") 
+        console.log(msg.text)
+        console.log(msg.text?.match("[A-Za-z0-9]{44}"))
         if(addresses?.length){
             const address = addresses[0]
             try{
@@ -39,7 +42,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                     responseMessage+=`Market ${market.marketType}
                     LP: ${market.lp?.lpLockedUSD}\n`    
                 });    
-                console.log(responseMessage);                        
+                           
                 await rugcheckbot.sendMessage(msg.chat.id,  responseMessage, { parse_mode: 'HTML'});
 
             } catch(e) {
