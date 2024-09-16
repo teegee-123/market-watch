@@ -20,7 +20,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
 
     rugcheckbot.on('message', async (msg, meta) => {
         
-        const addresses = msg.text?.match("[A-Za-z0-9]{44}") 
+        const addresses = JSON.stringify(msg).match("[A-Za-z0-9]{44}") 
         console.log(msg)
         console.log(msg.text?.match("[A-Za-z0-9]{44}"))
         if(addresses?.length){
