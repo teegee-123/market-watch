@@ -34,9 +34,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                                 https://api.dexscreener.com/latest/dex/tokens/${address} \n
                                 http://api.rugcheck.xyz/v1/tokens/${address}/report \n
                                 Address: \`${data.mint}\`
-                                Risks: ${JSON.stringify(data.risks, null ,4)}
-                                Score: ${JSON.stringify(data.score)}
-                                Rugged: ${data.rugged}\n`
+                                `
                 data.markets?.forEach(market => {
                     responseMessage+=`Market ${market.marketType}
                     LP: ${market.lp.lpLockedUSD}\n`    
