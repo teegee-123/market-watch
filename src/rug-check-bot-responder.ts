@@ -42,7 +42,7 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                     LP: ${market.lp.lpLockedUSD}\n`    
                 });    
                 console.log(responseMessage);                        
-                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage, { parse_mode: 'MarkdownV2'});
+                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage, { parse_mode: 'HTML'});
 
             } catch(e) {
                 console.log('Error: ', e)
