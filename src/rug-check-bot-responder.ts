@@ -23,16 +23,16 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
         if(addresses?.length){
             const address = addresses[0]
             try{
-                console.log(`<a>http://api.rugcheck.xyz/v1/tokens/${address}/report</a>\n`)
-                console.log(`<a>https://api.dexscreener.com/latest/dex/tokens/${address}</a>\n`)
+                console.log(`http://api.rugcheck.xyz/v1/tokens/${address}/report`)
+                console.log(`https://api.dexscreener.com/latest/dex/tokens/${address}`)
                 const rugcheck_response = await fetch(`http://api.rugcheck.xyz/v1/tokens/${address}/report`);
                 const dexscreener_response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
                 
                 
                 const data = await rugcheck_response.json();                
-                let responseMessage = `<b>RugCheckAnalyzer</b>
+                let responseMessage = `RugCheckAnalyzer
                                 http://api.rugcheck.xyz/v1/tokens/${address}/report
-                                Address: <a>${data.mint}</a>
+                                Address: \`${data.mint}\`
                                 Risks: ${JSON.stringify(data.risks, null ,4)}
                                 Score: ${JSON.stringify(data.score)}
                                 Rugged: ${data.rugged}\n`
