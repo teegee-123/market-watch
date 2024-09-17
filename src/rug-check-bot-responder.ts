@@ -33,11 +33,12 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                 // const dexscreener_response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
                 const data = await rugcheck_response.json();                
                 let responseMessage = `
-                RugCheckAnalyzer
-                Dexscreener: https://api.dexscreener.com/latest/dex/tokens/${address} \n
-                RugCheck: http://api.rugcheck.xyz/v1/tokens/${address}/report \n
-                PumpFun: https://pump.fun/${address}
-                Address: "${address} ${address.length}"
+
+RugCheckAnalyzer
+Dexscreener: https://api.dexscreener.com/latest/dex/tokens/${address} \n
+RugCheck: http://api.rugcheck.xyz/v1/tokens/${address}/report \n
+PumpFun: https://pump.fun/${address}
+Address: "${address} ${address.length}"
                 `
                 data.markets?.forEach(market => {
                     responseMessage+=`Market ${market.marketType}
