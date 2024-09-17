@@ -34,8 +34,9 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
                 const data = await rugcheck_response.json();                
                 let responseMessage = `
                 RugCheckAnalyzer
-                https://api.dexscreener.com/latest/dex/tokens/${address} \n
-                http://api.rugcheck.xyz/v1/tokens/${address}/report \n
+                Dexscreener: https://api.dexscreener.com/latest/dex/tokens/${address} \n
+                RugCheck: http://api.rugcheck.xyz/v1/tokens/${address}/report \n
+                PumpFun: https://pump.fun/${address}
                 Address: "${address} ${address.length}"
                 `
                 data.markets?.forEach(market => {
