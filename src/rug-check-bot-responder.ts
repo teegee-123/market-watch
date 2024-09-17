@@ -20,34 +20,37 @@ export async function startRugListener(rugcheckbot: TelegramBot) {
 
     rugcheckbot.on('message', async (msg, meta) => {
         
-        const addresses = JSON.stringify(msg).match("[A-Za-z0-9]{44}") 
-        console.log(JSON.stringify(msg)) 
-        console.log("addresses", addresses) 
-        if(addresses?.length){
-            const address = addresses[0]
+        const addresses = [
+            msg.text?.match("[A-Za-z0-9]{40,}[pump]")[0] ?? null, 
+            msg.caption?.match("[A-Za-z0-9]{40,}[pump]")[0] ?? null
+        ].find(x => !!x)
+        
+        console.log("addresses", addresses, addresses.length) 
+        if(addresses){
+            const address = addresses
             try{
-                console.log(`http://api.rugcheck.xyz/v1/tokens/${address}/report`)
-                console.log(`https://api.dexscreener.com/latest/dex/tokens/${address}`)
                 const rugcheck_response = await fetch(`http://api.rugcheck.xyz/v1/tokens/${address}/report`);
-                const dexscreener_response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
-                
-                
+                // const dexscreener_response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
                 const data = await rugcheck_response.json();                
-                let responseMessage = `RugCheckAnalyzer
-                                https://api.dexscreener.com/latest/dex/tokens/${address} \n
-                                http://api.rugcheck.xyz/v1/tokens/${address}/report \n
-                                Address: \`${data.mint}\`
-                                `
+                let responseMessage = `
+                RugCheckAnalyzer
+                https://api.dexscreener.com/latest/dex/tokens/${address} \n
+                http://api.rugcheck.xyz/v1/tokens/${address}/report \n
+                Address: "${address} ${address.length}"
+                `
                 data.markets?.forEach(market => {
                     responseMessage+=`Market ${market.marketType}
                     LP: ${market.lp?.lpLockedUSD}\n`    
                 });    
                            
-                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage, { parse_mode: 'HTML'});
+                await rugcheckbot.sendMessage(msg.chat.id,  responseMessage);
 
             } catch(e) {
                 console.log('Error: ', e)
             }
+        }
+        else {
+            await rugcheckbot.sendMessage(msg.chat.id,  'cant find `address`');
         }
 
     });
